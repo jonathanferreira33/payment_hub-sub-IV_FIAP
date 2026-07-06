@@ -7,8 +7,10 @@ import com.fiap.payment_hub.application.dto.response.PaymentResponse;
 import com.fiap.payment_hub.application.mappers.PaymentAppMapper;
 import com.fiap.payment_hub.application.ports.input.CreatePaymentUseCase;
 import com.fiap.payment_hub.application.ports.output.PaymentEventPublisher;
+import com.fiap.payment_hub.application.ports.output.PaymentGateway;
 import com.fiap.payment_hub.application.ports.output.PaymentRepository;
 import com.fiap.payment_hub.domain.entities.Payment;
+import com.fiap.payment_hub.domain.enums.PaymentStatus;
 import com.fiap.payment_hub.domain.valueobjects.Card;
 import com.fiap.payment_hub.domain.valueobjects.Pix;
 import org.springframework.stereotype.Service;
@@ -19,10 +21,14 @@ public class CreatePaymentService implements CreatePaymentUseCase {
 
     private final PaymentRepository paymentRepository;
     private final PaymentEventPublisher eventPublisher;
+    private final PaymentGateway paymentGateway;
 
-    public CreatePaymentService(PaymentRepository paymentRepository, PaymentEventPublisher eventPublisher) {
+    public CreatePaymentService(PaymentRepository paymentRepository,
+                                PaymentEventPublisher eventPublisher,
+                                PaymentGateway paymentGateway) {
         this.paymentRepository = paymentRepository;
         this.eventPublisher = eventPublisher;
+        this.paymentGateway = paymentGateway;
     }
 
     @Override
@@ -42,9 +48,21 @@ public class CreatePaymentService implements CreatePaymentUseCase {
 
         Payment savedPayment = paymentRepository.save(payment);
 
-        eventPublisher.publishPaymentCreated(savedPayment);
+        savedPayment.startProcessing();
 
-        return PaymentAppMapper.domainToResponse(savedPayment);
+        PaymentStatus isGatewayApproved = paymentGateway.process(savedPayment);
+
+        if (isGatewayApproved.equals(PaymentStatus.PENDING)) {
+            savedPayment.approve();
+        } else {
+            savedPayment.fail();
+        }
+
+        Payment finalPaymentState = paymentRepository.save(savedPayment);
+
+        eventPublisher.publishPaymentCreated(finalPaymentState);
+
+        return PaymentAppMapper.domainToResponse(finalPaymentState);
     }
 
     private Card mapToDomainCard(CardRequest cardReq) {

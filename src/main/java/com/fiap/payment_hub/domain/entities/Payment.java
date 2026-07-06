@@ -83,6 +83,32 @@ public class Payment {
         return pendingPayment;
     }
 
+    public static Payment reconstitute(
+            UUID id,
+            BigDecimal amount,
+            String customerId,
+            String description,
+            PaymentMethod paymentMethod,
+            PaymentStatus status,
+            Card card,
+            Pix pix,
+            LocalDateTime createdAt,
+            LocalDateTime processedAt
+    ) {
+        return new Payment(
+                id,
+                amount,
+                customerId,
+                description,
+                paymentMethod,
+                status,
+                card,
+                pix,
+                createdAt,
+                processedAt
+        );
+    }
+
     public void startProcessing() {
         validateStatusTransition(PaymentStatus.PROCESSING);
         this.status = PaymentStatus.PROCESSING;
