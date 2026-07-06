@@ -50,9 +50,9 @@ public class CreatePaymentService implements CreatePaymentUseCase {
 
         savedPayment.startProcessing();
 
-        PaymentStatus isGatewayApproved = paymentGateway.process(savedPayment);
+        PaymentStatus isGatewayMLApproved = paymentGateway.process(savedPayment);
 
-        if (isGatewayApproved.equals(PaymentStatus.PENDING)) {
+        if (isGatewayMLApproved.equals(PaymentStatus.ACCEPTED)) {
             savedPayment.approve();
         } else {
             savedPayment.fail();

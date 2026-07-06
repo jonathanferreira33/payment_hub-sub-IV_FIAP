@@ -7,23 +7,23 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 @Component
-public class StripePaymentGatewayAdapter implements PaymentGateway {
+public class MLPaymentGatewayAdapter implements PaymentGateway {
 
     private final RestTemplate restTemplate;
 
-    public StripePaymentGatewayAdapter(RestTemplate restTemplate) {
+    public MLPaymentGatewayAdapter(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
     @Override
     public PaymentStatus process(Payment payment) {
         try {
-            System.out.println("Enviando pagamento " + payment.getId() + " via HTTP para API externa da Stripe..."); // TODO: log
+            System.out.println("Enviando pagamento " + payment.getId() + " via HTTP para API externa da Mercado Livre..."); // TODO: log
 
-            return PaymentStatus.PENDING;
+            return PaymentStatus.ACCEPTED;
 
         } catch (Exception e) {
-            System.err.println("Falha ao comunicar com a Stripe: " + e.getMessage()); // TODO: log
+            System.err.println("Falha ao comunicar com a Mercado Livre: " + e.getMessage()); // TODO: log
             return PaymentStatus.FAILED;
         }
     }

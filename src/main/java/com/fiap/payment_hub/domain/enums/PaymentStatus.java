@@ -3,6 +3,7 @@ package com.fiap.payment_hub.domain.enums;
 import java.util.List;
 
 public enum PaymentStatus {
+    ACCEPTED,
     PENDING,
     PROCESSING,
     SUCCESS,
@@ -11,7 +12,8 @@ public enum PaymentStatus {
 
     public boolean canTransitionTo(PaymentStatus nextStatus) {
         return switch (this) {
-            case PENDING -> List.of(PROCESSING, CANCELLED).contains(nextStatus);
+            case ACCEPTED -> List.of(PROCESSING, CANCELLED).contains(nextStatus);
+            case PENDING -> List.of(ACCEPTED, PROCESSING, CANCELLED).contains(nextStatus);
             case PROCESSING -> List.of(SUCCESS, FAILED).contains(nextStatus);
             case SUCCESS, FAILED, CANCELLED -> false;
         };
