@@ -35,11 +35,10 @@ Atualiza DB
                      │
         ┌────────────┴─────────────┐
         │                          │
-FakeGateway               MercadoPagoGateway
         │                          │
         └────────────┬─────────────┘
                      │
-                 StripeGateway
+            MercadoPagoGateway
 
 ```
 
@@ -96,3 +95,6 @@ shared
 |JUnit 5||
 |Mockito||
 |Testcontainers (Mongo + RabbitMQ)||
+
+
+## Rulesets Github
