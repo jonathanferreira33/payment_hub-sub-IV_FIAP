@@ -1,0 +1,64 @@
+name: pipeline-fiap-iv
+
+on:
+  pull_request:
+    branches:
+        - main
+        - develop
+        - feature/*
+        - release/*
+        - hotflix/*
+
+  push:
+    branches:
+      - main
+    tags:
+      - v1.*
+  
+  issues:
+    types:
+      - opened
+      - closed
+      - reopened
+  
+  label:
+    types:
+      - created
+      - edited
+      - deleted
+
+  schedule:
+    - cron: '30 5,17 * * 0'
+
+  workflow_dispatch:
+      inputs:
+        environment:
+          description: 'Ambiente de deploy'
+          required: true
+          default: 'dev'
+          type: choice
+          options:
+            - dev
+            - hml
+            - prd
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Run Tests with Maven
+        run: mvn clean test
+
+      - name: Build Application
+        run: mvn package -DskipTests
