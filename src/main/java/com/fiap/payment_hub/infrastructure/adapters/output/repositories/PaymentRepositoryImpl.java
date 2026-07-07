@@ -27,6 +27,7 @@ public class PaymentRepositoryImpl implements PaymentRepository {
 
     @Override
     public Optional<Payment> findById(UUID id) {
-        return Optional.empty();
+        return repository.findById(id)
+                .map(PaymentInfrastructureMapper::jpaToDomain);
     }
 }

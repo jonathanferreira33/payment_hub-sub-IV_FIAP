@@ -3,6 +3,8 @@ package com.fiap.payment_hub.infrastructure.adapters.output.messaging;
 import com.fiap.payment_hub.application.ports.output.PaymentEventPublisher;
 import com.fiap.payment_hub.domain.entities.Payment;
 import com.fiap.payment_hub.infrastructure.config.messaging.RabbitMQConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 
@@ -10,6 +12,8 @@ import org.springframework.stereotype.Component;
 public class RabbitMQPaymentEventAdapter implements PaymentEventPublisher {
 
     private final RabbitTemplate rabbitTemplate;
+    private static final Logger log =
+            LoggerFactory.getLogger(RabbitMQPaymentEventAdapter.class);
 
     public RabbitMQPaymentEventAdapter(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
@@ -25,6 +29,6 @@ public class RabbitMQPaymentEventAdapter implements PaymentEventPublisher {
                 event
         );
 
-        System.out.println("Mensagem de pagamento enviado com sucesso para a exchange: " + payment.getId()); //TODO: log
+        log.info("Pagamento {} enviado para RabbitMQ", payment.getId());
     }
 }

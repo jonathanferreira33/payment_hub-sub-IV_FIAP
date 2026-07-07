@@ -24,7 +24,7 @@ public class MLPaymentGatewayAdapter implements PaymentGateway {
 
         } catch (Exception e) {
             System.err.println("Falha ao comunicar com a Mercado Livre: " + e.getMessage()); // TODO: log
-            return PaymentStatus.FAILED;
+            return PaymentStatus.REJECTED;
         }
     }
 }

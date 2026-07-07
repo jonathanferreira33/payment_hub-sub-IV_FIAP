@@ -1,4 +1,8 @@
-package com.fiap.payment_hub.infrastructure.error;
+package com.fiap.payment_hub.domain.exceptions;
 
-public class PaymentNotFoundException {
+public class PaymentNotFoundException extends RuntimeException {
+
+    public PaymentNotFoundException(String message) {
+        super(message);
+    }
 }
