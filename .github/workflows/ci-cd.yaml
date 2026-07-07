@@ -3,44 +3,30 @@ name: pipeline-fiap-iv
 on:
   pull_request:
     branches:
-        - main
-        - develop
-        - feature/*
-        - release/*
-        - hotflix/*
+      - main
+      - develop
+      - 'release/*'
 
   push:
     branches:
       - main
     tags:
-      - v1.*
+      - 'v1.*'
   
-  issues:
-    types:
-      - opened
-      - closed
-      - reopened
-  
-  label:
-    types:
-      - created
-      - edited
-      - deleted
-
   schedule:
     - cron: '30 5,17 * * 0'
 
   workflow_dispatch:
-      inputs:
-        environment:
-          description: 'Ambiente de deploy'
-          required: true
-          default: 'dev'
-          type: choice
-          options:
-            - dev
-            - hml
-            - prd
+    inputs:
+      environment:
+        description: 'Ambiente de deploy'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - hml
+          - prd
 
 jobs:
   build-and-test:
