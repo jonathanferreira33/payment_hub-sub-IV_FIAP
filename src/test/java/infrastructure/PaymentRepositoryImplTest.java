@@ -84,7 +84,7 @@ class PaymentRepositoryImplTest {
                 PaymentMethod.CARD,
                 PaymentStatus.SUCCESS,
                 new Card(
-                        "Jonathan",
+                        "Tatsumaki",
                         "1234123412341234",
                         "12/30",
                         "123",
