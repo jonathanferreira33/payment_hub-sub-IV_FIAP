@@ -11,8 +11,8 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQConfig {
 
     public static final String PAYMENT_EXCHANGE = "payment.exchange";
-    public static final String PAYMENT_CREATED_QUEUE = "payment.created.queue";
-    public static final String PAYMENT_CREATED_ROUTING_KEY = "payment.created.routing-key";
+    public static final String PAYMENT_REQUEST_QUEUE = "payment.request.queue";
+    public static final String PAYMENT_ROUTING_KEY = "payment.request.routing-key";
 
     @Bean
     public TopicExchange paymentExchange() {
@@ -20,16 +20,16 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue paymentCreatedQueue() {
-        return QueueBuilder.durable(PAYMENT_CREATED_QUEUE).build();
+    public Queue paymentQueue() {
+        return QueueBuilder.durable(PAYMENT_REQUEST_QUEUE).build();
     }
 
     @Bean
-    public Binding bindingPaymentCreated(Queue paymentCreatedQueue, TopicExchange paymentExchange) {
+    public Binding bindingPayment(Queue paymentQueue, TopicExchange paymentExchange) {
         return BindingBuilder
-                .bind(paymentCreatedQueue)
+                .bind(paymentQueue)
                 .to(paymentExchange)
-                .with(PAYMENT_CREATED_ROUTING_KEY);
+                .with(PAYMENT_ROUTING_KEY);
     }
 
     @Bean

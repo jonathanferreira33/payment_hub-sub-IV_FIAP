@@ -67,7 +67,7 @@ class RabbitMQPaymentEventAdapterTest {
 
         verify(rabbitTemplate).convertAndSend(
                 eq(RabbitMQConfig.PAYMENT_EXCHANGE),
-                eq(RabbitMQConfig.PAYMENT_CREATED_ROUTING_KEY),
+                eq(RabbitMQConfig.PAYMENT_ROUTING_KEY),
                 any(PaymentCreatedEvent.class)
         );
     }
@@ -82,7 +82,7 @@ class RabbitMQPaymentEventAdapterTest {
 
         verify(rabbitTemplate).convertAndSend(
                 eq(RabbitMQConfig.PAYMENT_EXCHANGE),
-                eq(RabbitMQConfig.PAYMENT_CREATED_ROUTING_KEY),
+                eq(RabbitMQConfig.PAYMENT_ROUTING_KEY),
                 captor.capture()
         );
 

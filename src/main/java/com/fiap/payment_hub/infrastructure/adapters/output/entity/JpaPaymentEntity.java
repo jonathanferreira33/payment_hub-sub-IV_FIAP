@@ -2,7 +2,7 @@ package com.fiap.payment_hub.infrastructure.adapters.output.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.Id;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

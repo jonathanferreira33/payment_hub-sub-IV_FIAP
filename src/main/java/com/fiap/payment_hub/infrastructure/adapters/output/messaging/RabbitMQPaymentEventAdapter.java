@@ -25,7 +25,7 @@ public class RabbitMQPaymentEventAdapter implements PaymentEventPublisher {
 
         rabbitTemplate.convertAndSend(
                 RabbitMQConfig.PAYMENT_EXCHANGE,
-                RabbitMQConfig.PAYMENT_CREATED_ROUTING_KEY,
+                RabbitMQConfig.PAYMENT_ROUTING_KEY,
                 event
         );
 

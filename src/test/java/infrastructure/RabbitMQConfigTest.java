@@ -26,25 +26,25 @@ class RabbitMQConfigTest {
 
     @Test
     void deveCriarFila() {
-        Queue queue = config.paymentCreatedQueue();
+        Queue queue = config.paymentQueue();
 
         assertNotNull(queue);
-        assertEquals(RabbitMQConfig.PAYMENT_CREATED_QUEUE, queue.getName());
+        assertEquals(RabbitMQConfig.PAYMENT_REQUEST_QUEUE, queue.getName());
         assertTrue(queue.isDurable());
     }
 
     @Test
     void deveCriarBinding() {
-        Queue queue = config.paymentCreatedQueue();
+        Queue queue = config.paymentQueue();
         TopicExchange exchange = config.paymentExchange();
 
-        Binding binding = config.bindingPaymentCreated(queue, exchange);
+        Binding binding = config.bindingPayment(queue, exchange);
 
         assertNotNull(binding);
         assertEquals(queue.getName(), binding.getDestination());
         assertEquals(exchange.getName(), binding.getExchange());
         assertEquals(
-                RabbitMQConfig.PAYMENT_CREATED_ROUTING_KEY,
+                RabbitMQConfig.PAYMENT_ROUTING_KEY,
                 binding.getRoutingKey()
         );
     }
