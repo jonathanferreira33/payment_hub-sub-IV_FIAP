@@ -9,7 +9,7 @@ import java.util.UUID;
 public record PaymentCreatedEvent(
         UUID paymentId,
         BigDecimal amount,
-        String customerId,
+        UUID customerId,
         String paymentMethod,
         LocalDateTime createdAt
 ) {

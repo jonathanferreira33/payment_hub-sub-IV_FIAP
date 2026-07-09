@@ -16,7 +16,7 @@ public class JpaPaymentEntity {
     private UUID id;
 
     private BigDecimal amount;
-    private String customerId;
+    private UUID customerId;
     private String description;
     private String paymentMethod;
     private String status;
@@ -35,7 +35,7 @@ public class JpaPaymentEntity {
 
     public JpaPaymentEntity(UUID id,
                             BigDecimal amount,
-                            String customerId,
+                            UUID customerId,
                             String description,
                             String paymentMethod,
                             String status,
@@ -65,7 +65,7 @@ public class JpaPaymentEntity {
 
     public UUID getId() { return id; }
     public BigDecimal getAmount() { return amount; }
-    public String getCustomerId() { return customerId; }
+    public UUID getCustomerId() { return customerId; }
     public String getDescription() { return description; }
     public String getPaymentMethod() { return paymentMethod; }
     public String getStatus() { return status; }

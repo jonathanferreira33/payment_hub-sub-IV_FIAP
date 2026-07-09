@@ -15,7 +15,7 @@ public class Payment {
 
     private UUID id;
     private BigDecimal amount;
-    private String customerId;
+    private UUID customerId;
     private String description;
     private PaymentMethod paymentMethod;
     private PaymentStatus status;
@@ -26,7 +26,7 @@ public class Payment {
 
     public Payment(UUID id,
                    BigDecimal amount,
-                   String customerId,
+                   UUID customerId,
                    String description,
                    PaymentMethod paymentMethod,
                    PaymentStatus status,
@@ -48,7 +48,7 @@ public class Payment {
 
     public UUID getId() { return id; }
     public BigDecimal getAmount() { return amount; }
-    public String getCustomerId() { return customerId; }
+    public UUID getCustomerId() { return customerId; }
     public String getDescription() { return description; }
     public PaymentMethod getPaymentMethod() { return paymentMethod; }
     public PaymentStatus getStatus() { return status; }
@@ -59,7 +59,7 @@ public class Payment {
 
     public static Payment create(
             BigDecimal amount,
-            String customerId,
+            UUID customerId,
             String description,
             PaymentMethod paymentMethod,
             Card card,
@@ -86,7 +86,7 @@ public class Payment {
     public static Payment reconstitute(
             UUID id,
             BigDecimal amount,
-            String customerId,
+            UUID customerId,
             String description,
             PaymentMethod paymentMethod,
             PaymentStatus status,

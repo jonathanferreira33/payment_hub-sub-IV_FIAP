@@ -23,6 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -58,11 +59,13 @@ class CreatePaymentServiceTest {
 
         paymentRequest = new PaymentRequest(
                 new BigDecimal("100.00"),
-                "cliente-123",
+                UUID.randomUUID(),
                 "Pagamento teste",
+                UUID.randomUUID(),
                 PaymentMethod.CARD,
                 card,
-                null
+                null,
+                "AAAA-1234"
         );
 
         payment = Payment.create(
@@ -171,12 +174,14 @@ class CreatePaymentServiceTest {
         );
 
         PaymentRequest request = new PaymentRequest(
-                new BigDecimal("50"),
-                "cliente",
-                "Pix",
+                new BigDecimal("100.00"),
+                UUID.randomUUID(),
+                "Pagamento teste",
+                UUID.randomUUID(),
                 PaymentMethod.PIX,
                 null,
-                pix
+                pix,
+                "AAAA-1234"
         );
 
         Payment pixPayment = Payment.create(

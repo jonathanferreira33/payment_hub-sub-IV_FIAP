@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
+import java.util.UUID;
 
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
@@ -28,11 +29,13 @@ class PaymentQueueListenerTest {
     void deveProcessarRequisicaoComSucessoAoReceberMensagem() {
         PaymentRequest requestFake = new PaymentRequest(
                 BigDecimal.valueOf(100.00),
-                "cust_12345",
+                UUID.randomUUID(),
                 "Assinatura Premium",
+                UUID.randomUUID(),
                 PaymentMethod.PIX,
                 null,
-                null
+                null,
+                "AAAA-1234"
         );
 
         paymentQueueListener.receivePaymentRequest(requestFake);
@@ -43,12 +46,14 @@ class PaymentQueueListenerTest {
     @Test
     void deveCapturarETratarExcecaoQuandoOUseCaseFalhar() {
         PaymentRequest requestFake = new PaymentRequest(
-                BigDecimal.valueOf(50.00),
-                "cust_99999",
-                "Compra Falha",
-                PaymentMethod.CARD,
+                BigDecimal.valueOf(100.00),
+                UUID.randomUUID(),
+                "Assinatura Premium",
+                UUID.randomUUID(),
+               null,
                 null,
-                null
+                null,
+                "AAAA-1234"
         );
 
         doThrow(new IllegalArgumentException("Dados inválidos capturados no validador"))

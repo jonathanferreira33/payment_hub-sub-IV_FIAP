@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,7 +23,7 @@ class PaymentValidatorTest {
         Payment payment = Payment.reconstitute(
                 null,
                 new BigDecimal("10"),
-                "cliente",
+                UUID.randomUUID(),
                 "descricao",
                 PaymentMethod.CARD,
                 null,
@@ -50,7 +51,7 @@ class PaymentValidatorTest {
         Payment payment = Payment.reconstitute(
                 null,
                 new BigDecimal("10"),
-                "cliente",
+                UUID.randomUUID(),
                 "descricao",
                 PaymentMethod.CARD,
                 null,
@@ -72,7 +73,7 @@ class PaymentValidatorTest {
         Payment payment = Payment.reconstitute(
                 null,
                 new BigDecimal("10"),
-                "cliente",
+                UUID.randomUUID(),
                 "descricao",
                 PaymentMethod.PIX,
                 null,
@@ -94,7 +95,7 @@ class PaymentValidatorTest {
         Payment payment = Payment.reconstitute(
                 null,
                 new BigDecimal("10"),
-                "cliente",
+                UUID.randomUUID(),
                 "descricao",
                 PaymentMethod.PIX,
                 null,
@@ -116,7 +117,7 @@ class PaymentValidatorTest {
         Payment payment = Payment.reconstitute(
                 null,
                 new BigDecimal("10"),
-                "cliente",
+                UUID.randomUUID(),
                 "descricao",
                 null,
                 null,
@@ -138,7 +139,7 @@ class PaymentValidatorTest {
         Payment payment = Payment.reconstitute(
                 null,
                 new BigDecimal("10"),
-                "",
+                null,
                 "descricao",
                 PaymentMethod.CARD,
                 null,
@@ -160,7 +161,7 @@ class PaymentValidatorTest {
         Payment payment = Payment.reconstitute(
                 null,
                 new BigDecimal("10"),
-                "cliente",
+                UUID.randomUUID(),
                 "",
                 PaymentMethod.CARD,
                 null,
@@ -182,7 +183,7 @@ class PaymentValidatorTest {
         Payment payment = Payment.reconstitute(
                 null,
                 BigDecimal.ZERO,
-                "cliente",
+                UUID.randomUUID(),
                 "descricao",
                 PaymentMethod.CARD,
                 null,
@@ -204,7 +205,7 @@ class PaymentValidatorTest {
         Payment payment = Payment.reconstitute(
                 null,
                 null,
-                "cliente",
+                UUID.randomUUID(),
                 "descricao",
                 PaymentMethod.CARD,
                 null,
@@ -247,7 +248,7 @@ class PaymentValidatorTest {
     private Payment criarPagamentoValidoCartao() {
         return Payment.create(
                 new BigDecimal("100.00"),
-                "cliente-123",
+                UUID.randomUUID(),
                 "Compra de veículo",
                 PaymentMethod.CARD,
                 new Card(

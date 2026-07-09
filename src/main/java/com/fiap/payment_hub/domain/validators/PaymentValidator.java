@@ -6,6 +6,7 @@ import com.fiap.payment_hub.domain.valueobjects.Card;
 import com.fiap.payment_hub.domain.valueobjects.Pix;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 public class PaymentValidator {
 
@@ -15,7 +16,6 @@ public class PaymentValidator {
         }
 
         validateAmount(payment.getAmount());
-        validateDescription(payment.getDescription());
         validateCustomerId(payment.getCustomerId());
         validatePaymentMethodSpecifics(payment);
     }
@@ -26,14 +26,8 @@ public class PaymentValidator {
         }
     }
 
-    private static void validateDescription(String description) {
-        if (description == null || description.trim().isEmpty()) {
-            throw new InvalidPaymentException("A descrição do pagamento não pode estar vazia.");
-        }
-    }
-
-    private static void validateCustomerId(String customerId) {
-        if (customerId == null || customerId.trim().isEmpty()) {
+    private static void validateCustomerId(UUID customerId) {
+        if (customerId == null) {
             throw new InvalidPaymentException("O ID do cliente é obrigatório.");
         }
     }

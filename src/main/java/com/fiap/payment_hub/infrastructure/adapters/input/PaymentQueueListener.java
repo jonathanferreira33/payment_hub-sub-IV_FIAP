@@ -19,13 +19,21 @@ public class PaymentQueueListener {
 
     @RabbitListener(queues = "payment.request.queue")
     public void receivePaymentRequest(PaymentRequest request) {
-        try {
-            log.info("Nova requisição de pagamento recebida via RabbitMQ para o cliente: {}", request.customerId());
 
+        log.info("Mensagem bruta recebida no Listener: {}", request);
+
+        try {
+            log.info("Nova requisição de pagamento recebida via RabbitMQ para o cliente: {}",
+                    request != null ? request.customerId() : "NULL");
+
+            log.info("Nova requisição de pagamento recebida via RabbitMQ coma descrição: {}",
+                    request != null ? request.description() : "NULL");
             createPaymentUseCase.execute(request);
 
         } catch (Exception e) {
-            log.error("Erro ao processar mensagem da fila para o cliente {}: {}", request.customerId(), e.getMessage(), e);
+            log.error("Erro ao processar mensagem da fila para o cliente {}: {}",
+                    request != null ? request.customerId() : "NULL",
+                    e.getMessage(), e);
         }
     }
 }

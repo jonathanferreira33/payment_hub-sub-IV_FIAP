@@ -23,11 +23,16 @@ public class RabbitMQPaymentEventAdapter implements PaymentEventPublisher {
     public void publishPaymentCreated(Payment payment) {
         PaymentCreatedEvent event = PaymentCreatedEvent.fromDomain(payment);
 
-        rabbitTemplate.convertAndSend(
-                RabbitMQConfig.PAYMENT_EXCHANGE,
-                RabbitMQConfig.PAYMENT_ROUTING_KEY,
-                event
-        );
+        try {
+            rabbitTemplate.convertAndSend(
+                    RabbitMQConfig.PAYMENT_EXCHANGE,
+                    RabbitMQConfig.PAYMENT_ROUTING_KEY,
+                    event
+            );
+            System.out.println("Evento enviado com sucesso para o RabbitMQ!");
+        } catch (Exception e) {
+            System.err.println("Erro ao enviar para o RabbitMQ: " + e.getMessage());
+        }
 
         log.info("Pagamento {} enviado para RabbitMQ", payment.getId());
     }

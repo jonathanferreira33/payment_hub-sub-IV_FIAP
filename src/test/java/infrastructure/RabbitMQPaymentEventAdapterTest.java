@@ -43,7 +43,7 @@ class RabbitMQPaymentEventAdapterTest {
         payment = Payment.reconstitute(
                 UUID.randomUUID(),
                 new BigDecimal("100.00"),
-                "cliente-123",
+                UUID.randomUUID(),
                 "Pagamento teste",
                 PaymentMethod.CARD,
                 PaymentStatus.SUCCESS,

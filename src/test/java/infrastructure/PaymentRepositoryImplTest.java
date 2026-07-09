@@ -40,7 +40,7 @@ class PaymentRepositoryImplTest {
         Payment payment = Payment.reconstitute(
                 UUID.randomUUID(),
                 BigDecimal.TEN,
-                "cliente",
+                UUID.randomUUID(),
                 "Compra",
                 PaymentMethod.CARD,
                 PaymentStatus.SUCCESS,
@@ -79,7 +79,7 @@ class PaymentRepositoryImplTest {
         Payment payment = Payment.reconstitute(
                 id,
                 BigDecimal.valueOf(150),
-                "cliente-123",
+                UUID.randomUUID(),
                 "Compra de veículo",
                 PaymentMethod.CARD,
                 PaymentStatus.SUCCESS,

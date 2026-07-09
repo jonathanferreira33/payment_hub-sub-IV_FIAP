@@ -30,7 +30,7 @@ class PaymentAppMapperTest {
     void deveMapearPagamentoComCartao() {
 
         UUID id = UUID.randomUUID();
-        String customerId = UUID.randomUUID().toString();
+        UUID customerId = UUID.randomUUID();
         LocalDateTime createdAt = LocalDateTime.now();
         LocalDateTime processedAt = createdAt.plusMinutes(1);
 
@@ -82,7 +82,7 @@ class PaymentAppMapperTest {
     void deveMapearPagamentoComPix() {
 
         UUID id = UUID.randomUUID();
-        String customerId = UUID.randomUUID().toString();
+        UUID customerId = UUID.randomUUID();
 
         Pix pix = new Pix(
                 "frieren@email.com",
@@ -127,7 +127,7 @@ class PaymentAppMapperTest {
         Payment payment = Payment.reconstitute(
                 UUID.randomUUID(),
                 BigDecimal.TEN,
-                UUID.randomUUID().toString(),
+                UUID.randomUUID(),
                 "Teste",
                 PaymentMethod.CARD,
                 PaymentStatus.SUCCESS,
@@ -156,7 +156,7 @@ class PaymentAppMapperTest {
         Payment payment = Payment.reconstitute(
                 UUID.randomUUID(),
                 BigDecimal.TEN,
-                UUID.randomUUID().toString(),
+                UUID.randomUUID(),
                 "Teste",
                 PaymentMethod.CARD,
                 PaymentStatus.SUCCESS,
@@ -185,7 +185,7 @@ class PaymentAppMapperTest {
         Payment payment = Payment.reconstitute(
                 UUID.randomUUID(),
                 BigDecimal.TEN,
-                UUID.randomUUID().toString(),
+                UUID.randomUUID(),
                 "Teste",
                 PaymentMethod.CARD,
                 PaymentStatus.SUCCESS,

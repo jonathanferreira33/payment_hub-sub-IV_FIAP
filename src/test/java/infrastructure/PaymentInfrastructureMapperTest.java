@@ -32,7 +32,7 @@ class PaymentInfrastructureMapperTest {
         Payment payment = Payment.reconstitute(
                 UUID.randomUUID(),
                 new BigDecimal("150.00"),
-                "cliente",
+                UUID.randomUUID(),
                 "Compra",
                 PaymentMethod.CARD,
                 PaymentStatus.SUCCESS,
@@ -64,7 +64,7 @@ class PaymentInfrastructureMapperTest {
         Payment payment = Payment.reconstitute(
                 UUID.randomUUID(),
                 new BigDecimal("50"),
-                "cliente",
+                UUID.randomUUID(),
                 "Pix",
                 PaymentMethod.PIX,
                 PaymentStatus.PENDING,
@@ -91,7 +91,7 @@ class PaymentInfrastructureMapperTest {
         JpaPaymentEntity entity = new JpaPaymentEntity(
                 UUID.randomUUID(),
                 new BigDecimal("100"),
-                "cliente",
+                UUID.randomUUID(),
                 "Compra",
                 "CARD",
                 "SUCCESS",
@@ -132,7 +132,7 @@ class PaymentInfrastructureMapperTest {
         JpaPaymentEntity entity = new JpaPaymentEntity(
                 UUID.randomUUID(),
                 new BigDecimal("30"),
-                "cliente",
+                UUID.randomUUID(),
                 "Pix",
                 "PIX",
                 "PENDING",
@@ -181,7 +181,7 @@ class PaymentInfrastructureMapperTest {
         Payment payment = Payment.reconstitute(
                 UUID.randomUUID(),
                 new BigDecimal("10"),
-                "cliente",
+                UUID.randomUUID(),
                 "Pagamento",
                 PaymentMethod.CARD,
                 PaymentStatus.PENDING,

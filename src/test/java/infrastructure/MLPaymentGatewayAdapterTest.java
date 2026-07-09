@@ -14,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(MockitoExtension.class)
@@ -36,7 +37,7 @@ class MLPaymentGatewayAdapterTest {
 
         Payment paymentFake = Payment.create(
                 BigDecimal.valueOf(250.00),
-                "cust_123456",
+                UUID.randomUUID(),
                 "Compra de teste no Mercado Livre",
                 PaymentMethod.PIX,
                 null,
@@ -55,7 +56,7 @@ class MLPaymentGatewayAdapterTest {
 
         Payment paymentFake = Payment.create(
                 BigDecimal.valueOf(100.00),
-                "cust_9999",
+                UUID.randomUUID(),
                 "Tentativa falha",
                 PaymentMethod.PIX,
                 null,
