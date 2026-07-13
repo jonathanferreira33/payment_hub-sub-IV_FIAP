@@ -39,7 +39,8 @@ class PaymentInfrastructureMapperTest {
                 card,
                 null,
                 LocalDateTime.now(),
-                LocalDateTime.now()
+                LocalDateTime.now(),
+                "ABCD-1345"
         );
 
         JpaPaymentEntity entity =
@@ -71,7 +72,9 @@ class PaymentInfrastructureMapperTest {
                 null,
                 pix,
                 LocalDateTime.now(),
-                null
+                null,
+                "ABCD-1345"
+
         );
 
         JpaPaymentEntity entity =
@@ -102,7 +105,9 @@ class PaymentInfrastructureMapperTest {
                 "12/30",
                 "CREDIT",
                 null,
-                null
+                null,
+                "ABCD-1345"
+
         );
 
         Payment payment =
@@ -143,7 +148,9 @@ class PaymentInfrastructureMapperTest {
                 null,
                 null,
                 "pix-chave",
-                expiration
+                expiration,
+                "ABCD-1345"
+
         );
 
         Payment payment =
@@ -188,6 +195,7 @@ class PaymentInfrastructureMapperTest {
                 null,
                 null,
                 LocalDateTime.now(),
+                null,
                 null
         );
 

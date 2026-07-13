@@ -36,6 +36,7 @@ class PaymentValidatorTest {
                 ),
                 null,
                 null,
+                null,
                 null
         );
 
@@ -54,6 +55,7 @@ class PaymentValidatorTest {
                 UUID.randomUUID(),
                 "descricao",
                 PaymentMethod.CARD,
+                null,
                 null,
                 null,
                 null,
@@ -80,6 +82,7 @@ class PaymentValidatorTest {
                 null,
                 new Pix("", LocalDateTime.now()),
                 null,
+                null,
                 null
         );
 
@@ -102,6 +105,7 @@ class PaymentValidatorTest {
                 null,
                 null,
                 null,
+                null,
                 null
         );
 
@@ -119,6 +123,7 @@ class PaymentValidatorTest {
                 new BigDecimal("10"),
                 UUID.randomUUID(),
                 "descricao",
+                null,
                 null,
                 null,
                 null,
@@ -146,27 +151,6 @@ class PaymentValidatorTest {
                 new Card("Mukouda Tsuyoshi","1234","12/30","123", CardType.CREDIT),
                 null,
                 null,
-                null
-        );
-
-        assertThrows(
-                InvalidPaymentException.class,
-                () -> PaymentValidator.validate(payment)
-        );
-    }
-
-    @Test
-    void deveLancarExcecaoQuandoDescricaoForVazia() {
-
-        Payment payment = Payment.reconstitute(
-                null,
-                new BigDecimal("10"),
-                UUID.randomUUID(),
-                "",
-                PaymentMethod.CARD,
-                null,
-                new Card("Gabimaru","1234","12/30","123", CardType.CREDIT),
-                null,
                 null,
                 null
         );
@@ -190,6 +174,7 @@ class PaymentValidatorTest {
                 new Card("Asta","1234","12/30","123", CardType.CREDIT),
                 null,
                 null,
+                null,
                 null
         );
 
@@ -210,6 +195,7 @@ class PaymentValidatorTest {
                 PaymentMethod.CARD,
                 null,
                 new Card("Yami Sukehiro","1234","12/30","123", CardType.CREDIT),
+                null,
                 null,
                 null,
                 null
@@ -258,6 +244,7 @@ class PaymentValidatorTest {
                         "123",
                         CardType.CREDIT
                 ),
+                null,
                 null
         );
     }

@@ -6,7 +6,6 @@ import com.fiap.payment_hub.application.dto.request.PixRequest;
 import com.fiap.payment_hub.application.dto.response.PaymentResponse;
 import com.fiap.payment_hub.application.mappers.PaymentAppMapper;
 import com.fiap.payment_hub.application.ports.input.CreatePaymentUseCase;
-import com.fiap.payment_hub.application.ports.output.PaymentEventPublisher;
 import com.fiap.payment_hub.application.ports.output.PaymentGateway;
 import com.fiap.payment_hub.application.ports.output.PaymentRepository;
 import com.fiap.payment_hub.domain.entities.Payment;
@@ -20,15 +19,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class CreatePaymentService implements CreatePaymentUseCase {
 
     private final PaymentRepository paymentRepository;
-    private final PaymentEventPublisher eventPublisher;
-    private final PaymentGateway paymentGateway;
+    private final AsyncPaymentProcessor asyncProcessor;
 
-    public CreatePaymentService(PaymentRepository paymentRepository,
-                                PaymentEventPublisher eventPublisher,
-                                PaymentGateway paymentGateway) {
+    public CreatePaymentService(
+            PaymentRepository paymentRepository,
+            AsyncPaymentProcessor asyncProcessor) {
         this.paymentRepository = paymentRepository;
-        this.eventPublisher = eventPublisher;
-        this.paymentGateway = paymentGateway;
+        this.asyncProcessor = asyncProcessor;
     }
 
     @Override
@@ -43,26 +40,15 @@ public class CreatePaymentService implements CreatePaymentUseCase {
                 request.description(),
                 request.paymentMethod(),
                 domainCard,
-                domainPix
+                domainPix,
+                request.paymentCode()
         );
 
         Payment savedPayment = paymentRepository.save(payment);
 
-        savedPayment.startProcessing();
+        asyncProcessor.processAsynchronousPayment(payment.getPaymentCode());
 
-        PaymentStatus isGatewayMLApproved = paymentGateway.process(savedPayment);
-
-        if (isGatewayMLApproved.equals(PaymentStatus.ACCEPTED)) {
-            savedPayment.approve();
-        } else {
-            savedPayment.fail();
-        }
-
-        Payment finalPaymentState = paymentRepository.save(savedPayment);
-
-        eventPublisher.publishPaymentCreated(finalPaymentState);
-
-        return PaymentAppMapper.domainToResponse(finalPaymentState);
+        return PaymentAppMapper.domainToResponse(savedPayment);
     }
 
     private Card mapToDomainCard(CardRequest cardReq) {

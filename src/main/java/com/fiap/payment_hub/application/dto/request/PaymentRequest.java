@@ -13,5 +13,5 @@ public record PaymentRequest(
         PaymentMethod paymentMethod,
         CardRequest card,
         PixRequest pix,
-        String codigoExternoPagamento
+        String paymentCode
 ) {}

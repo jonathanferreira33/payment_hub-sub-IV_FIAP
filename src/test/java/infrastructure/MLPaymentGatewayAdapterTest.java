@@ -20,15 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(MockitoExtension.class)
 class MLPaymentGatewayAdapterTest {
 
-    @Mock
-    private RestTemplate restTemplate;
-
     private MLPaymentGatewayAdapter mlPaymentGatewayAdapter;
-
-    @BeforeEach
-    void setUp() {
-        this.mlPaymentGatewayAdapter = new MLPaymentGatewayAdapter(restTemplate);
-    }
 
     @Test
     void deveRetornarAcceptedQuandoProcessarComSucesso() {
@@ -41,7 +33,8 @@ class MLPaymentGatewayAdapterTest {
                 "Compra de teste no Mercado Livre",
                 PaymentMethod.PIX,
                 null,
-                pixFake
+                pixFake,
+                null
         );
 
         PaymentStatus resultadoStatus = mlPaymentGatewayAdapter.process(paymentFake);
@@ -60,7 +53,8 @@ class MLPaymentGatewayAdapterTest {
                 "Tentativa falha",
                 PaymentMethod.PIX,
                 null,
-                pixFake
+                pixFake,
+                null
         );
 
         PaymentStatus resultadoStatus = mlPaymentGatewayAdapter.process(paymentFake);

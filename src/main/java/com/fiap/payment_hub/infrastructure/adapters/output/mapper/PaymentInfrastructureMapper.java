@@ -33,7 +33,7 @@ public class PaymentInfrastructureMapper {
                 domain.getCreatedAt(),
                 domain.getProcessedAt(),
                 cardHolder, cardNumber, cardExp, cardType,
-                pixKey, pixExp
+                pixKey, pixExp, domain.getPaymentCode()
         );
     }
 
@@ -61,7 +61,8 @@ public class PaymentInfrastructureMapper {
                 card,
                 pix,
                 jpa.getCreatedAt(),
-                jpa.getProcessedAt()
+                jpa.getProcessedAt(),
+                jpa.getPaymentCode()
         );
     }
 }

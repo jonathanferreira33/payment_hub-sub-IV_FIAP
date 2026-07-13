@@ -53,7 +53,8 @@ class PaymentRepositoryImplTest {
                 ),
                 null,
                 LocalDateTime.now(),
-                LocalDateTime.now()
+                LocalDateTime.now(),
+                null
         );
 
         JpaPaymentEntity entity = PaymentInfrastructureMapper.domainToJpa(payment);
@@ -92,7 +93,8 @@ class PaymentRepositoryImplTest {
                 ),
                 null,
                 LocalDateTime.now(),
-                LocalDateTime.now()
+                LocalDateTime.now(),
+                null
         );
 
         JpaPaymentEntity entity = PaymentInfrastructureMapper.domainToJpa(payment);

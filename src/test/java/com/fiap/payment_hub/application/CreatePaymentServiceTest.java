@@ -4,7 +4,6 @@ import com.fiap.payment_hub.application.dto.request.CardRequest;
 import com.fiap.payment_hub.application.dto.request.PaymentRequest;
 import com.fiap.payment_hub.application.dto.request.PixRequest;
 import com.fiap.payment_hub.application.dto.response.PaymentResponse;
-import com.fiap.payment_hub.application.ports.output.PaymentEventPublisher;
 import com.fiap.payment_hub.application.ports.output.PaymentGateway;
 import com.fiap.payment_hub.application.ports.output.PaymentRepository;
 import com.fiap.payment_hub.application.services.CreatePaymentService;
@@ -33,9 +32,6 @@ class CreatePaymentServiceTest {
 
     @Mock
     private PaymentRepository paymentRepository;
-
-    @Mock
-    private PaymentEventPublisher eventPublisher;
 
     @Mock
     private PaymentGateway paymentGateway;
@@ -80,7 +76,8 @@ class CreatePaymentServiceTest {
                         "123",
                         CardType.CREDIT
                 ),
-                null
+                null,
+                "ABCD-1234"
         );
     }
 
@@ -100,7 +97,6 @@ class CreatePaymentServiceTest {
 
         verify(paymentRepository, times(2)).save(any(Payment.class));
         verify(paymentGateway).process(any(Payment.class));
-        verify(eventPublisher).publishPaymentCreated(any(Payment.class));
     }
 
     @Test
@@ -117,7 +113,6 @@ class CreatePaymentServiceTest {
         assertEquals(PaymentStatus.FAILED, response.status());
 
         verify(paymentRepository, times(2)).save(any(Payment.class));
-        verify(eventPublisher).publishPaymentCreated(any(Payment.class));
     }
 
     @Test
@@ -130,8 +125,6 @@ class CreatePaymentServiceTest {
                 .thenReturn(PaymentStatus.ACCEPTED);
 
         service.execute(paymentRequest);
-
-        verify(eventPublisher).publishPaymentCreated(any(Payment.class));
     }
 
     @Test
@@ -193,7 +186,8 @@ class CreatePaymentServiceTest {
                 new Pix(
                         pix.key(),
                         pix.expiration()
-                )
+                ),
+                "ABCD-1234"
         );
 
         when(paymentRepository.save(any()))

@@ -52,7 +52,8 @@ class PaymentAppMapperTest {
                 card,
                 null,
                 createdAt,
-                processedAt
+                processedAt,
+                "ABCD-124"
         );
 
         PaymentResponse response = PaymentAppMapper.domainToResponse(payment);
@@ -99,7 +100,8 @@ class PaymentAppMapperTest {
                 null,
                 pix,
                 LocalDateTime.now(),
-                null
+                null,
+                "ABCD-1234"
         );
 
         PaymentResponse response = PaymentAppMapper.domainToResponse(payment);
@@ -134,7 +136,8 @@ class PaymentAppMapperTest {
                 card,
                 null,
                 LocalDateTime.now(),
-                LocalDateTime.now()
+                LocalDateTime.now(),
+                "ABCD-1243"
         );
 
         PaymentResponse response = PaymentAppMapper.domainToResponse(payment);
@@ -163,7 +166,8 @@ class PaymentAppMapperTest {
                 card,
                 null,
                 LocalDateTime.now(),
-                LocalDateTime.now()
+                LocalDateTime.now(),
+                "ABCD-1234"
         );
 
         PaymentResponse response = PaymentAppMapper.domainToResponse(payment);
@@ -192,7 +196,8 @@ class PaymentAppMapperTest {
                 card,
                 null,
                 LocalDateTime.now(),
-                LocalDateTime.now()
+                LocalDateTime.now(),
+                "ABCD-1234"
         );
 
         PaymentResponse response = PaymentAppMapper.domainToResponse(payment);

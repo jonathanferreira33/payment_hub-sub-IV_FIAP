@@ -23,6 +23,7 @@ public class Payment {
     private Pix pix;
     private LocalDateTime createdAt;
     private LocalDateTime processedAt;
+    private String paymentCode;
 
     public Payment(UUID id,
                    BigDecimal amount,
@@ -33,7 +34,8 @@ public class Payment {
                    Card card,
                    Pix pix,
                    LocalDateTime createdAt,
-                   LocalDateTime processedAt) {
+                   LocalDateTime processedAt,
+                   String paymentCode) {
         this.id = id;
         this.amount = amount;
         this.customerId = customerId;
@@ -44,6 +46,7 @@ public class Payment {
         this.pix = pix;
         this.createdAt = createdAt;
         this.processedAt = processedAt;
+        this.paymentCode = paymentCode;
     }
 
     public UUID getId() { return id; }
@@ -56,6 +59,7 @@ public class Payment {
     public Pix getPix() { return pix; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getProcessedAt() { return processedAt; }
+    public String getPaymentCode() { return paymentCode; }
 
     public static Payment create(
             BigDecimal amount,
@@ -63,7 +67,8 @@ public class Payment {
             String description,
             PaymentMethod paymentMethod,
             Card card,
-            Pix pix
+            Pix pix,
+            String paymentCode
     ) {
         Payment pendingPayment = new Payment(
                 UUID.randomUUID(),
@@ -71,11 +76,12 @@ public class Payment {
                 customerId,
                 description,
                 paymentMethod,
-                PaymentStatus.PENDING,
+                PaymentStatus.PROCESSING,
                 card,
                 pix,
                 LocalDateTime.now(),
-                null
+                null,
+                paymentCode
         );
 
         PaymentValidator.validate(pendingPayment);
@@ -93,7 +99,8 @@ public class Payment {
             Card card,
             Pix pix,
             LocalDateTime createdAt,
-            LocalDateTime processedAt
+            LocalDateTime processedAt,
+            String paymentCode
     ) {
         return new Payment(
                 id,
@@ -105,7 +112,8 @@ public class Payment {
                 card,
                 pix,
                 createdAt,
-                processedAt
+                processedAt,
+                paymentCode
         );
     }
 

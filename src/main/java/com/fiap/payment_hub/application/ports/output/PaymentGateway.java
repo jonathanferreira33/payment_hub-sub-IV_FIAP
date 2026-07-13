@@ -6,5 +6,6 @@ import com.fiap.payment_hub.domain.enums.PaymentStatus;
 public interface PaymentGateway {
 
     PaymentStatus process(Payment payment);
+    void notifyStatus(String codigoPagamento, String status);
 
 }

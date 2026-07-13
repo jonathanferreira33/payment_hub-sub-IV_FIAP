@@ -30,8 +30,11 @@ public class JpaPaymentEntity {
 
     private String pixKey;
     private LocalDateTime pixExpiration;
+    private String paymentCode;
 
-    protected JpaPaymentEntity() {}
+    protected JpaPaymentEntity(String paymentCode) {
+        this.paymentCode = paymentCode;
+    }
 
     public JpaPaymentEntity(UUID id,
                             BigDecimal amount,
@@ -46,7 +49,7 @@ public class JpaPaymentEntity {
                             String cardExpiration,
                             String cardType,
                             String pixKey,
-                            LocalDateTime pixExpiration) {
+                            LocalDateTime pixExpiration, String paymentCode) {
         this.id = id;
         this.amount = amount;
         this.customerId = customerId;
@@ -61,6 +64,7 @@ public class JpaPaymentEntity {
         this.cardType = cardType;
         this.pixKey = pixKey;
         this.pixExpiration = pixExpiration;
+        this.paymentCode = paymentCode;
     }
 
     public UUID getId() { return id; }
@@ -77,4 +81,5 @@ public class JpaPaymentEntity {
     public String getCardType() { return cardType; }
     public String getPixKey() { return pixKey; }
     public LocalDateTime getPixExpiration() { return pixExpiration; }
+    public String getPaymentCode() { return paymentCode; }
 }
