@@ -1,11 +1,13 @@
 package infrastructure;
 
+import com.fiap.payment_hub.application.dto.request.WebhookPagamentoRequest;
 import com.fiap.payment_hub.domain.entities.Payment;
 import com.fiap.payment_hub.domain.enums.PaymentMethod;
 import com.fiap.payment_hub.domain.enums.PaymentStatus;
 import com.fiap.payment_hub.domain.valueobjects.Pix;
 import com.fiap.payment_hub.infrastructure.error.PaymentException;
 import com.fiap.payment_hub.infrastructure.gateway.MLPaymentGatewayAdapter;
+import com.fiap.payment_hub.shared.enums.StatusPagamento;
 import org.hibernate.mapping.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -62,20 +64,36 @@ class MLPaymentGatewayAdapterTest {
     @Test
     void deveNotificarStatusComSucesso() {
 
+        WebhookPagamentoRequest webhookPagamentoRequest = new WebhookPagamentoRequest (
+                UUID.randomUUID(),
+                BigDecimal.TEN,
+                "ABCD-1234",
+                StatusPagamento.CONFIRMADO
+
+        );
+
         doNothing().when(mlPaymentGatewayAdapter).executePost(any(), anyString());
 
-        mlPaymentGatewayAdapter.notifyStatus("ABCD-1234", "APROVADO");
+        mlPaymentGatewayAdapter.notifyStatus(webhookPagamentoRequest);
 
         verify(mlPaymentGatewayAdapter).executePost(any(), eq("ABCD-1234"));
     }
 
     @Test
     void deveLancarPaymentExceptionQuandoWebhookFalhar() {
+        WebhookPagamentoRequest webhookPagamentoRequest = new WebhookPagamentoRequest (
+                UUID.randomUUID(),
+                BigDecimal.TEN,
+                "ABCD-1234",
+                StatusPagamento.CONFIRMADO
+
+        );
+
         doThrow(new PaymentException("Erro", null))
                 .when(mlPaymentGatewayAdapter).executePost(any(), anyString());
 
         assertThrows(PaymentException.class, () ->
-                mlPaymentGatewayAdapter.notifyStatus("ABCD-1234", "APROVADO")
+                mlPaymentGatewayAdapter.notifyStatus(webhookPagamentoRequest)
         );
     }
 

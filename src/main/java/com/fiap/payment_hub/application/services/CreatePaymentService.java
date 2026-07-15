@@ -11,15 +11,12 @@ import com.fiap.payment_hub.domain.entities.Payment;
 import com.fiap.payment_hub.domain.valueobjects.Card;
 import com.fiap.payment_hub.domain.valueobjects.Pix;
 import com.fiap.payment_hub.infrastructure.error.PaymentException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
 public class CreatePaymentService implements CreatePaymentUseCase {
-    private static final Logger log = LoggerFactory.getLogger(CreatePaymentService.class);
 
     private final PaymentRepository paymentRepository;
     private final AsyncPaymentProcessor asyncProcessor;
@@ -50,12 +47,12 @@ public class CreatePaymentService implements CreatePaymentUseCase {
                 domainPix,
                 request.paymentCode()
         );
-        log.info("STEP 2");
-        Payment savedPayment = paymentRepository.save(payment);
-        log.info("STEP 3");
 
-        asyncProcessor.processAsynchronousPayment(payment.getId());
-        log.info("STEP 4");
+        Payment savedPayment = paymentRepository.save(payment);
+
+
+        asyncProcessor.processAsynchronousPayment(payment.getId(), request.vendaId());
+
 
         return PaymentAppMapper.domainToResponse(savedPayment);
     }

@@ -47,9 +47,6 @@ public class PaymentValidator {
         if (pix == null) {
             throw new InvalidPaymentException("Dados do Pix são necessários para o método de pagamento Pix.");
         }
-        if (pix.getKey() == null || pix.getKey().trim().isEmpty()) {
-            throw new InvalidPaymentException("Pix key is required.");
-        }
     }
 
     private static void validateCardSpecifics(Card card) {

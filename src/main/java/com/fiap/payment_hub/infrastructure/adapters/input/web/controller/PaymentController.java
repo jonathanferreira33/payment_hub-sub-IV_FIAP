@@ -25,11 +25,11 @@ public class PaymentController {
 
     @PostMapping
     public ResponseEntity<Void> criarPagamento(@RequestBody PaymentRequest request) {
-        log.info("STEP 1");
-
+        log.info("Recebido no Payment Hub: valor = {}", request.amount());
         useCase.execute(request);
-        log.info("STEP 5");
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
+
 }

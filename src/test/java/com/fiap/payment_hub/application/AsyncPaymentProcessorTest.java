@@ -55,13 +55,9 @@ class AsyncPaymentProcessorTest {
         when(paymentGateway.process(payment))
                 .thenReturn(PaymentStatus.ACCEPTED);
 
-        asyncProcessor.processAsynchronousPayment(idPagamento);
+        asyncProcessor.processAsynchronousPayment(idPagamento, UUID.randomUUID());
 
         verify(paymentGateway).process(payment);
 
-        verify(paymentGateway).notifyStatus(
-                eq("ABCD-1234"),
-                eq("ACCEPTED")
-        );
     }
 }

@@ -1,5 +1,6 @@
 package com.fiap.payment_hub.infrastructure.gateway;
 
+import com.fiap.payment_hub.application.dto.request.WebhookPagamentoRequest;
 import com.fiap.payment_hub.application.ports.output.PaymentGateway;
 import com.fiap.payment_hub.domain.entities.Payment;
 import com.fiap.payment_hub.domain.enums.PaymentStatus;
@@ -7,11 +8,10 @@ import com.fiap.payment_hub.infrastructure.error.PaymentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
-
-import java.util.Map;
 
 @Component
 public class MLPaymentGatewayAdapter implements PaymentGateway {
@@ -34,23 +34,20 @@ public class MLPaymentGatewayAdapter implements PaymentGateway {
     }
 
     @Override
-    public void notifyStatus(String codPayment, String status) {
-        var payload = Map.of(
-                "codigoPagamento", codPayment,
-                "statusPagamento", status
-        );
-
-        executePost(payload, codPayment);
+    public void notifyStatus(WebhookPagamentoRequest request) {
+        executePost(request, request.codigoPagamento());
     }
 
-    public void executePost(Map<String, String> payload, String codPayment) {
+    public void executePost(WebhookPagamentoRequest payload, String codPayment) {
         try {
             restClient.post()
-                    .uri("/api/veiculos/webhook/pagamento")
+                    .uri("/veiculos/webhook/pagamento")
+                    .contentType(MediaType.APPLICATION_JSON)
                     .body(payload)
                     .retrieve()
                     .toBodilessEntity();
         } catch (RestClientException ex) {
+            log.error("Falha ao notificar webhook. Payload: {}", payload, ex);
             throw new PaymentException("Erro ao notificar webhook do veículo: " + codPayment, ex);
         }
     }

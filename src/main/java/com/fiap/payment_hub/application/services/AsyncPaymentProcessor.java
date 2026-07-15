@@ -1,5 +1,7 @@
 package com.fiap.payment_hub.application.services;
 
+import com.fiap.payment_hub.application.dto.request.WebhookPagamentoRequest;
+import com.fiap.payment_hub.application.mappers.PaymentMapper;
 import com.fiap.payment_hub.application.ports.output.PaymentGateway;
 import com.fiap.payment_hub.application.ports.output.PaymentRepository;
 import com.fiap.payment_hub.domain.entities.Payment;
@@ -25,7 +27,7 @@ public class AsyncPaymentProcessor {
     }
 
     @Async
-    public void processAsynchronousPayment(UUID idPagamento) {
+    public void processAsynchronousPayment(UUID idPagamento, UUID idVenda) {
 
         try {
             log.info("Inicio Processamento de pagamento " + idPagamento + " payment-hub");
@@ -41,8 +43,12 @@ public class AsyncPaymentProcessor {
             log.info("Envio de notificação ao Webhook, codigo de pagamento: " + payment.getPaymentCode());
 
             paymentGateway.notifyStatus(
-                    payment.getPaymentCode(),
-                    status.name()
+                    new WebhookPagamentoRequest(
+                            idVenda,
+                            payment.getAmount(),
+                            payment.getPaymentCode(),
+                            PaymentMapper.toWebhookStatus(status)
+                    )
             );
 
         } catch (InterruptedException e) {

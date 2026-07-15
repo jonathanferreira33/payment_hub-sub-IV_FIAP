@@ -100,7 +100,7 @@ class CreatePaymentServiceTest {
         assertNotNull(response);
         assertEquals(PaymentStatus.PROCESSING, response.status());
 
-        verify(asyncProcessor, times(1)).processAsynchronousPayment(any(UUID.class));
+        verify(asyncProcessor, times(1)).processAsynchronousPayment(any(UUID.class), any(UUID.class));
     }
 
     @Test
@@ -114,7 +114,7 @@ class CreatePaymentServiceTest {
 
         verify(paymentRepository, times(1)).save(any(Payment.class));
 
-        verify(asyncProcessor, times(1)).processAsynchronousPayment(any(UUID.class));
+        verify(asyncProcessor, times(1)).processAsynchronousPayment(any(UUID.class), any(UUID.class));
     }
 
     @Test
