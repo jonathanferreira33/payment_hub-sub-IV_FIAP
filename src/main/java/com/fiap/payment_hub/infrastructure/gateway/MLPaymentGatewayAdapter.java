@@ -27,15 +27,10 @@ public class MLPaymentGatewayAdapter implements PaymentGateway {
 
     @Override
     public PaymentStatus process(Payment payment) {
-        try {
-            log.info("Enviando pagamento {} via HTTP para API externa do Mercado Livre...", payment.getId());
-            return PaymentStatus.ACCEPTED;
-
-        } catch (Exception e) {
-            log.error("Falha ao comunicar com o Mercado Livre para o pagamento {}: {}", payment.getId(), e.getMessage(), e);
+        if ("ERRO".equals(payment.getDescription())) {
             return PaymentStatus.REJECTED;
-
         }
+        return PaymentStatus.ACCEPTED;
     }
 
     @Override
@@ -45,6 +40,10 @@ public class MLPaymentGatewayAdapter implements PaymentGateway {
                 "statusPagamento", status
         );
 
+        executePost(payload, codPayment);
+    }
+
+    public void executePost(Map<String, String> payload, String codPayment) {
         try {
             restClient.post()
                     .uri("/api/veiculos/webhook/pagamento")

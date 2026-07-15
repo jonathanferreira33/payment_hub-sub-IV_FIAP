@@ -11,7 +11,8 @@ import com.fiap.payment_hub.domain.valueobjects.Pix;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,8 +32,8 @@ class PaymentAppMapperTest {
 
         UUID id = UUID.randomUUID();
         UUID customerId = UUID.randomUUID();
-        LocalDateTime createdAt = LocalDateTime.now();
-        LocalDateTime processedAt = createdAt.plusMinutes(1);
+        Instant createdAt = Instant.now();
+        Instant processedAt = createdAt.plus(1, ChronoUnit.MINUTES);
 
         Card card = new Card(
                 "Roronoa Zoro",
@@ -87,7 +88,7 @@ class PaymentAppMapperTest {
 
         Pix pix = new Pix(
                 "frieren@email.com",
-                LocalDateTime.now().plusMinutes(30)
+                Instant.now().plus(30, ChronoUnit.MINUTES)
         );
 
         Payment payment = Payment.reconstitute(
@@ -99,7 +100,7 @@ class PaymentAppMapperTest {
                 PaymentStatus.PENDING,
                 null,
                 pix,
-                LocalDateTime.now(),
+                Instant.now(),
                 null,
                 "ABCD-1234"
         );
@@ -135,8 +136,8 @@ class PaymentAppMapperTest {
                 PaymentStatus.SUCCESS,
                 card,
                 null,
-                LocalDateTime.now(),
-                LocalDateTime.now(),
+                Instant.now(),
+                Instant.now(),
                 "ABCD-1243"
         );
 
@@ -165,8 +166,8 @@ class PaymentAppMapperTest {
                 PaymentStatus.SUCCESS,
                 card,
                 null,
-                LocalDateTime.now(),
-                LocalDateTime.now(),
+                Instant.now(),
+                Instant.now(),
                 "ABCD-1234"
         );
 
@@ -195,8 +196,8 @@ class PaymentAppMapperTest {
                 PaymentStatus.SUCCESS,
                 card,
                 null,
-                LocalDateTime.now(),
-                LocalDateTime.now(),
+                Instant.now(),
+                Instant.now(),
                 "ABCD-1234"
         );
 

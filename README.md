@@ -98,3 +98,8 @@ shared
 
 
 ## Rulesets Github
+
+
+## Cobertura de Testes
+
+![img.png](img.png)

@@ -8,7 +8,7 @@ import com.fiap.payment_hub.domain.valueobjects.Card;
 import com.fiap.payment_hub.domain.valueobjects.Pix;
 import com.fiap.payment_hub.infrastructure.adapters.output.entity.JpaPaymentEntity;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public class PaymentInfrastructureMapper {
 
@@ -21,7 +21,7 @@ public class PaymentInfrastructureMapper {
         String cardType = domain.getCard() != null && domain.getCard().getType() != null ? domain.getCard().getType().name() : null;
 
         String pixKey = domain.getPix() != null ? domain.getPix().getKey() : null;
-        LocalDateTime pixExp = domain.getPix() != null ? domain.getPix().getExpiration() : null;
+        Instant pixExp = domain.getPix() != null ? domain.getPix().getExpiration() : null;
 
         return new JpaPaymentEntity(
                 domain.getId(),

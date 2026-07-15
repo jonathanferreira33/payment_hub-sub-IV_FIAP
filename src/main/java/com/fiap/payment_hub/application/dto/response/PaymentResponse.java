@@ -4,7 +4,8 @@ import com.fiap.payment_hub.domain.enums.PaymentMethod;
 import com.fiap.payment_hub.domain.enums.PaymentStatus;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
+
 import java.util.UUID;
 
 public record PaymentResponse(
@@ -16,6 +17,6 @@ public record PaymentResponse(
         PaymentStatus status,
         CardResponse card,
         PixResponse pix,
-        LocalDateTime createdAt,
-        LocalDateTime processedAt
+        Instant createdAt,
+        Instant processedAt
 ) {}

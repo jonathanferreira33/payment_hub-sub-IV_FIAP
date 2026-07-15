@@ -1,17 +1,17 @@
 package com.fiap.payment_hub.domain.valueobjects;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public class Pix {
 
     private final String key;
-    private final LocalDateTime expiration;
+    private final Instant expiration;
 
-    public Pix(String key, LocalDateTime expiration) {
+    public Pix(String key, Instant expiration) {
         this.key = key;
         this.expiration = expiration;
     }
 
     public String getKey() { return key; }
-    public LocalDateTime getExpiration() { return expiration; }
+    public Instant getExpiration() { return expiration; }
 }

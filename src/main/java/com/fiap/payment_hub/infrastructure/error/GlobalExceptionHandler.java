@@ -28,12 +28,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleGenericException(Exception ex, HttpServletRequest request) {
+        ex.printStackTrace();
+
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
         ApiErrorResponse errorBody = new ApiErrorResponse(
                 Instant.now().toString(),
                 status.value(),
-                "Erro do Servidor Interno",
+                "Erro do Servidor Interno: ",
                 "Ocorreu um erro inesperado. Entre em contato com o suporte.",
                 request.getRequestURI()
         );

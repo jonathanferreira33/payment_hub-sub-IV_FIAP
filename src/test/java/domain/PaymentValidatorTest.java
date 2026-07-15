@@ -10,7 +10,9 @@ import com.fiap.payment_hub.domain.valueobjects.Pix;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -80,7 +82,7 @@ class PaymentValidatorTest {
                 PaymentMethod.PIX,
                 null,
                 null,
-                new Pix("", LocalDateTime.now()),
+                new Pix("", Instant.now()),
                 null,
                 null,
                 null

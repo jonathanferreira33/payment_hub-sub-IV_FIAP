@@ -11,7 +11,9 @@ import com.fiap.payment_hub.infrastructure.adapters.output.mapper.PaymentInfrast
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,8 +40,8 @@ class PaymentInfrastructureMapperTest {
                 PaymentStatus.SUCCESS,
                 card,
                 null,
-                LocalDateTime.now(),
-                LocalDateTime.now(),
+                Instant.now(),
+                Instant.now(),
                 "ABCD-1345"
         );
 
@@ -59,7 +61,7 @@ class PaymentInfrastructureMapperTest {
 
         Pix pix = new Pix(
                 "11999999999",
-                LocalDateTime.now().plusMinutes(30)
+                Instant.now().plus(30, ChronoUnit.MINUTES)
         );
 
         Payment payment = Payment.reconstitute(
@@ -71,7 +73,7 @@ class PaymentInfrastructureMapperTest {
                 PaymentStatus.PENDING,
                 null,
                 pix,
-                LocalDateTime.now(),
+                Instant.now(),
                 null,
                 "ABCD-1345"
 
@@ -98,8 +100,8 @@ class PaymentInfrastructureMapperTest {
                 "Compra",
                 "CARD",
                 "SUCCESS",
-                LocalDateTime.now(),
-                LocalDateTime.now(),
+                Instant.now(),
+                Instant.now(),
                 "Boa Hancock",
                 "4111111111111111",
                 "12/30",
@@ -131,8 +133,7 @@ class PaymentInfrastructureMapperTest {
     @Test
     void deveConverterJpaParaDomainComPix() {
 
-        LocalDateTime expiration =
-                LocalDateTime.now().plusMinutes(30);
+        Instant expiration = Instant.now().plus(30, ChronoUnit.MINUTES);
 
         JpaPaymentEntity entity = new JpaPaymentEntity(
                 UUID.randomUUID(),
@@ -141,7 +142,7 @@ class PaymentInfrastructureMapperTest {
                 "Pix",
                 "PIX",
                 "PENDING",
-                LocalDateTime.now(),
+                Instant.now(),
                 null,
                 null,
                 null,
@@ -194,7 +195,7 @@ class PaymentInfrastructureMapperTest {
                 PaymentStatus.PENDING,
                 null,
                 null,
-                LocalDateTime.now(),
+                Instant.now(),
                 null,
                 null
         );

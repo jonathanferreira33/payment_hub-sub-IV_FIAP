@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -52,8 +53,8 @@ class PaymentRepositoryImplTest {
                         CardType.CREDIT
                 ),
                 null,
-                LocalDateTime.now(),
-                LocalDateTime.now(),
+                Instant.now(),
+                Instant.now(),
                 null
         );
 
@@ -92,8 +93,8 @@ class PaymentRepositoryImplTest {
                         CardType.CREDIT
                 ),
                 null,
-                LocalDateTime.now(),
-                LocalDateTime.now(),
+                Instant.now(),
+                Instant.now(),
                 null
         );
 

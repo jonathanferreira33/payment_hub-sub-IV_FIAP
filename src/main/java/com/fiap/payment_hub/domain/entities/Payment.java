@@ -8,7 +8,7 @@ import com.fiap.payment_hub.domain.valueobjects.Card;
 import com.fiap.payment_hub.domain.valueobjects.Pix;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 public class Payment {
@@ -21,8 +21,8 @@ public class Payment {
     private PaymentStatus status;
     private Card card;
     private Pix pix;
-    private LocalDateTime createdAt;
-    private LocalDateTime processedAt;
+    private Instant createdAt;
+    private Instant processedAt;
     private String paymentCode;
 
     public Payment(UUID id,
@@ -33,8 +33,8 @@ public class Payment {
                    PaymentStatus status,
                    Card card,
                    Pix pix,
-                   LocalDateTime createdAt,
-                   LocalDateTime processedAt,
+                   Instant createdAt,
+                   Instant processedAt,
                    String paymentCode) {
         this.id = id;
         this.amount = amount;
@@ -57,8 +57,8 @@ public class Payment {
     public PaymentStatus getStatus() { return status; }
     public Card getCard() { return card; }
     public Pix getPix() { return pix; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public LocalDateTime getProcessedAt() { return processedAt; }
+    public Instant getCreatedAt() { return createdAt; }
+    public Instant getProcessedAt() { return processedAt; }
     public String getPaymentCode() { return paymentCode; }
 
     public static Payment create(
@@ -79,7 +79,7 @@ public class Payment {
                 PaymentStatus.PROCESSING,
                 card,
                 pix,
-                LocalDateTime.now(),
+                Instant.now(),
                 null,
                 paymentCode
         );
@@ -98,8 +98,8 @@ public class Payment {
             PaymentStatus status,
             Card card,
             Pix pix,
-            LocalDateTime createdAt,
-            LocalDateTime processedAt,
+            Instant createdAt,
+            Instant processedAt,
             String paymentCode
     ) {
         return new Payment(
@@ -125,13 +125,13 @@ public class Payment {
     public void approve() {
         validateStatusTransition(PaymentStatus.SUCCESS);
         this.status = PaymentStatus.SUCCESS;
-        this.processedAt = LocalDateTime.now();
+        this.processedAt = Instant.now();
     }
 
     public void fail() {
         validateStatusTransition(PaymentStatus.FAILED);
         this.status = PaymentStatus.FAILED;
-        this.processedAt = LocalDateTime.now();
+        this.processedAt = Instant.now();
     }
 
     public void cancel() {

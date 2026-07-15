@@ -6,6 +6,7 @@ import com.fiap.payment_hub.application.dto.request.PixRequest;
 import com.fiap.payment_hub.application.dto.response.PaymentResponse;
 import com.fiap.payment_hub.application.ports.output.PaymentGateway;
 import com.fiap.payment_hub.application.ports.output.PaymentRepository;
+import com.fiap.payment_hub.application.services.AsyncPaymentProcessor;
 import com.fiap.payment_hub.application.services.CreatePaymentService;
 import com.fiap.payment_hub.domain.entities.Payment;
 import com.fiap.payment_hub.domain.enums.CardType;
@@ -13,21 +14,27 @@ import com.fiap.payment_hub.domain.enums.PaymentMethod;
 import com.fiap.payment_hub.domain.enums.PaymentStatus;
 import com.fiap.payment_hub.domain.valueobjects.Card;
 import com.fiap.payment_hub.domain.valueobjects.Pix;
+import com.fiap.payment_hub.infrastructure.error.PaymentException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class CreatePaymentServiceTest {
 
     @Mock
@@ -35,6 +42,9 @@ class CreatePaymentServiceTest {
 
     @Mock
     private PaymentGateway paymentGateway;
+
+    @Mock
+    private AsyncPaymentProcessor asyncProcessor;
 
     @InjectMocks
     private CreatePaymentService service;
@@ -83,36 +93,28 @@ class CreatePaymentServiceTest {
 
     @Test
     void deveProcessarPagamentoComCartaoAprovado() {
-
-        when(paymentRepository.save(any(Payment.class)))
-                .thenReturn(payment);
-
-        when(paymentGateway.process(any(Payment.class)))
-                .thenReturn(PaymentStatus.ACCEPTED);
+        when(paymentRepository.save(any(Payment.class))).thenReturn(payment);
 
         PaymentResponse response = service.execute(paymentRequest);
 
         assertNotNull(response);
-        assertEquals(PaymentStatus.SUCCESS, response.status());
+        assertEquals(PaymentStatus.PROCESSING, response.status());
 
-        verify(paymentRepository, times(2)).save(any(Payment.class));
-        verify(paymentGateway).process(any(Payment.class));
+        verify(asyncProcessor, times(1)).processAsynchronousPayment(any(UUID.class));
     }
 
     @Test
-    void deveProcessarPagamentoQuandoGatewayReprovar() {
+    void deveIniciarProcessamentoDePagamento() {
 
-        when(paymentRepository.save(any(Payment.class)))
-                .thenReturn(payment);
-
-        when(paymentGateway.process(any(Payment.class)))
-                .thenReturn(PaymentStatus.REJECTED);
+        when(paymentRepository.save(any(Payment.class))).thenReturn(payment);
 
         PaymentResponse response = service.execute(paymentRequest);
 
-        assertEquals(PaymentStatus.FAILED, response.status());
+        assertEquals(PaymentStatus.PROCESSING, response.status());
 
-        verify(paymentRepository, times(2)).save(any(Payment.class));
+        verify(paymentRepository, times(1)).save(any(Payment.class));
+
+        verify(asyncProcessor, times(1)).processAsynchronousPayment(any(UUID.class));
     }
 
     @Test
@@ -138,7 +140,7 @@ class CreatePaymentServiceTest {
 
         service.execute(paymentRequest);
 
-        verify(paymentRepository, times(2))
+        verify(paymentRepository, times(1))
                 .save(any(Payment.class));
     }
 
@@ -163,7 +165,7 @@ class CreatePaymentServiceTest {
 
         PixRequest pix = new PixRequest(
                 "11999999999",
-                LocalDateTime.now().plusMinutes(30)
+                Instant.now().plus(30, ChronoUnit.MINUTES)
         );
 
         PaymentRequest request = new PaymentRequest(
@@ -201,4 +203,5 @@ class CreatePaymentServiceTest {
         assertNotNull(response.pix());
         assertNull(response.card());
     }
+
 }

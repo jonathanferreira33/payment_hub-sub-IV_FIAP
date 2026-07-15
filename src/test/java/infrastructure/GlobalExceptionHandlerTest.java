@@ -85,7 +85,7 @@ class GlobalExceptionHandlerTest {
 
         assertNotNull(body);
         assertEquals(500, body.status());
-        assertEquals("Erro do Servidor Interno", body.error());
+        assertEquals("Erro do Servidor Interno: ", body.error());
         assertEquals(
                 "Ocorreu um erro inesperado. Entre em contato com o suporte.",
                 body.message()

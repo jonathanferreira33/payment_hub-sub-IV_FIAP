@@ -1,8 +1,8 @@
 package com.fiap.payment_hub.application.dto.request;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record PixRequest(
         String key,
-        LocalDateTime expiration
+        Instant expiration
 ) {}
