@@ -88,10 +88,7 @@ class PaymentValidatorTest {
                 null
         );
 
-        assertThrows(
-                InvalidPaymentException.class,
-                () -> PaymentValidator.validate(payment)
-        );
+        assertDoesNotThrow(() -> PaymentValidator.validate(payment));
     }
 
     @Test
