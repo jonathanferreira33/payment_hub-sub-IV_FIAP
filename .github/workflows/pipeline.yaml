@@ -22,7 +22,7 @@ jobs:
 
   docker-build-push:
     runs-on: ubuntu-latest
-    needs: build-test
+    needs: build-and-test
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
     steps:
       - uses: actions/checkout@v4
@@ -37,5 +37,5 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/vehicle-sales-service:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/vehicle-sales-service:${{ github.sha }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/payment-hub:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/payment-hub:${{ github.sha }}
