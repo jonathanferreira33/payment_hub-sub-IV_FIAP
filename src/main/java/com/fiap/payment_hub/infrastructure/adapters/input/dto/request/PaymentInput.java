@@ -1,18 +1,18 @@
-package com.fiap.payment_hub.application.dto.request;
+package com.fiap.payment_hub.infrastructure.adapters.input.dto.request;
 
 import com.fiap.payment_hub.domain.enums.PaymentMethod;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
-public record PaymentRequest(
+public record PaymentInput(
         BigDecimal amount,
         UUID customerId,
         String description,
         UUID vendaId,
         UUID veiculoId,
         PaymentMethod paymentMethod,
-        CardRequest card,
-        PixRequest pix,
+        CardInput card,
+        PixInput pix,
         String paymentCode
 ) {}

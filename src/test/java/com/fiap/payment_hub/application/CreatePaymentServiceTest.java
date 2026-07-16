@@ -14,6 +14,9 @@ import com.fiap.payment_hub.domain.enums.PaymentMethod;
 import com.fiap.payment_hub.domain.enums.PaymentStatus;
 import com.fiap.payment_hub.domain.valueobjects.Card;
 import com.fiap.payment_hub.domain.valueobjects.Pix;
+import com.fiap.payment_hub.infrastructure.adapters.input.dto.request.CardInput;
+import com.fiap.payment_hub.infrastructure.adapters.input.dto.request.PaymentInput;
+import com.fiap.payment_hub.infrastructure.adapters.input.dto.request.PixInput;
 import com.fiap.payment_hub.infrastructure.error.PaymentException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,8 +29,8 @@ import org.mockito.quality.Strictness;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -49,36 +52,37 @@ class CreatePaymentServiceTest {
     @InjectMocks
     private CreatePaymentService service;
 
-    private PaymentRequest paymentRequest;
+    private PaymentInput paymentInput;
     private Payment payment;
 
     @BeforeEach
     void setup() {
 
-        CardRequest card = new CardRequest(
-                "Sung Jinwoo",
+        CardInput cardInput = new CardInput(
+                "Wei Wuxian",
                 "4111111111111111",
                 "12/30",
                 "123",
                 CardType.CREDIT
         );
 
-        paymentRequest = new PaymentRequest(
+        paymentInput = new PaymentInput(
                 new BigDecimal("100.00"),
                 UUID.randomUUID(),
                 "Pagamento teste",
                 UUID.randomUUID(),
+                UUID.randomUUID(),
                 PaymentMethod.CARD,
-                card,
+                cardInput,
                 null,
                 "AAAA-1234"
         );
 
         payment = Payment.create(
-                paymentRequest.amount(),
-                paymentRequest.customerId(),
-                paymentRequest.description(),
-                paymentRequest.paymentMethod(),
+                paymentInput.amount(),
+                paymentInput.customerId(),
+                paymentInput.description(),
+                paymentInput.paymentMethod(),
                 new Card(
                         "Sung Jinwoo",
                         "4111111111111111",
@@ -89,18 +93,25 @@ class CreatePaymentServiceTest {
                 null,
                 "ABCD-1234"
         );
+
+        lenient().when(asyncProcessor.processAsynchronousPayment(any(), any(), any()))
+                .thenReturn(PaymentStatus.ACCEPTED);
     }
 
     @Test
     void deveProcessarPagamentoComCartaoAprovado() {
-        when(paymentRepository.save(any(Payment.class))).thenReturn(payment);
 
-        PaymentResponse response = service.execute(paymentRequest);
+        when(paymentGateway.process(any(Payment.class))).thenReturn(PaymentStatus.ACCEPTED);
+
+        when(paymentRepository.save(any(Payment.class))).thenReturn(payment);
+        when(paymentRepository.findById(any())).thenReturn(Optional.of(payment));
+
+        PaymentResponse response = service.execute(paymentInput);
 
         assertNotNull(response);
         assertEquals(PaymentStatus.PROCESSING, response.status());
 
-        verify(asyncProcessor, times(1)).processAsynchronousPayment(any(UUID.class), any(UUID.class));
+        verify(asyncProcessor, times(1)).processAsynchronousPayment(any(UUID.class), any(UUID.class), any(UUID.class));
     }
 
     @Test
@@ -108,13 +119,14 @@ class CreatePaymentServiceTest {
 
         when(paymentRepository.save(any(Payment.class))).thenReturn(payment);
 
-        PaymentResponse response = service.execute(paymentRequest);
+        PaymentResponse response = service.execute(paymentInput);
 
         assertEquals(PaymentStatus.PROCESSING, response.status());
 
         verify(paymentRepository, times(1)).save(any(Payment.class));
 
-        verify(asyncProcessor, times(1)).processAsynchronousPayment(any(UUID.class), any(UUID.class));
+        verify(asyncProcessor, times(1))
+                .processAsynchronousPayment(any(UUID.class), any(UUID.class), any(UUID.class));
     }
 
     @Test
@@ -126,7 +138,7 @@ class CreatePaymentServiceTest {
         when(paymentGateway.process(any()))
                 .thenReturn(PaymentStatus.ACCEPTED);
 
-        service.execute(paymentRequest);
+        service.execute(paymentInput);
     }
 
     @Test
@@ -138,7 +150,7 @@ class CreatePaymentServiceTest {
         when(paymentGateway.process(any()))
                 .thenReturn(PaymentStatus.ACCEPTED);
 
-        service.execute(paymentRequest);
+        service.execute(paymentInput);
 
         verify(paymentRepository, times(1))
                 .save(any(Payment.class));
@@ -153,7 +165,7 @@ class CreatePaymentServiceTest {
         when(paymentGateway.process(any()))
                 .thenReturn(PaymentStatus.ACCEPTED);
 
-        PaymentResponse response = service.execute(paymentRequest);
+        PaymentResponse response = service.execute(paymentInput);
 
         assertNotNull(response);
         assertEquals(payment.getCustomerId(), response.customerId());
@@ -163,15 +175,16 @@ class CreatePaymentServiceTest {
     @Test
     void deveCriarPagamentoSemCartaoQuandoPixForInformado() {
 
-        PixRequest pix = new PixRequest(
+        PixInput pix = new PixInput(
                 "11999999999",
                 Instant.now().plus(30, ChronoUnit.MINUTES)
         );
 
-        PaymentRequest request = new PaymentRequest(
+        PaymentInput request = new PaymentInput(
                 new BigDecimal("100.00"),
                 UUID.randomUUID(),
                 "Pagamento teste",
+                UUID.randomUUID(),
                 UUID.randomUUID(),
                 PaymentMethod.PIX,
                 null,
@@ -202,6 +215,74 @@ class CreatePaymentServiceTest {
 
         assertNotNull(response.pix());
         assertNull(response.card());
+    }
+
+    @Test
+    void deveLancarExcecaoQuandoAmbosCartaoEPixForemInformados() {
+        PaymentInput input = new PaymentInput(
+                new BigDecimal("100.00"),
+                UUID.randomUUID(),
+                "Pagamento teste",
+                UUID.randomUUID(),
+                UUID.randomUUID(),
+                PaymentMethod.PIX,
+                new CardInput("a", "1234", "12/26", "123", CardType.CREDIT),
+                new PixInput("email@email.com", Instant.now()),
+                "AAAA-1234"
+        );
+
+        assertThrows(PaymentException.class, () -> service.execute(input));
+    }
+
+    @Test
+    void deveAprovarPagamentoQuandoStatusForSuccess() {
+        PaymentInput input = new PaymentInput(
+                new BigDecimal("100.00"),
+                UUID.randomUUID(),
+                "Pagamento teste",
+                UUID.randomUUID(),
+                UUID.randomUUID(),
+                PaymentMethod.PIX,
+                null,
+                new PixInput("email@email.com", Instant.now()),
+                "AAAA-1234"
+        );
+
+        Payment paymentMock = mock(Payment.class);
+        when(paymentRepository.save(any())).thenReturn(paymentMock);
+
+        when(asyncProcessor.processAsynchronousPayment(any(), any(), any()))
+                .thenReturn(PaymentStatus.SUCCESS);
+
+        service.execute(input);
+
+        verify(paymentMock).approve();
+        verify(paymentMock, never()).fail();
+    }
+
+    @Test
+    void deveFalharPagamentoQuandoStatusForRejected() {
+        PaymentInput input = new PaymentInput(
+                new BigDecimal("100.00"),
+                UUID.randomUUID(),
+                "Teste",
+                UUID.randomUUID(),
+                UUID.randomUUID(),
+                PaymentMethod.CARD,
+                new CardInput("Nome", "123", "12/26", "123", CardType.CREDIT),
+                null,
+                "CODD-1233"
+        );
+        Payment paymentMock = mock(Payment.class);
+        when(paymentRepository.save(any())).thenReturn(paymentMock);
+
+        when(asyncProcessor.processAsynchronousPayment(any(), any(), any()))
+                .thenReturn(PaymentStatus.REJECTED);
+
+        service.execute(input);
+
+        verify(paymentMock).fail();
+        verify(paymentMock, never()).approve();
     }
 
 }

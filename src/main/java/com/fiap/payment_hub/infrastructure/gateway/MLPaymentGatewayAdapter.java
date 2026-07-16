@@ -9,15 +9,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
+
+import java.util.Random;
+import java.util.UUID;
 
 @Component
 public class MLPaymentGatewayAdapter implements PaymentGateway {
 
     private final RestClient restClient;
-
+    private Random random = new Random();
     private static final Logger log = LoggerFactory.getLogger(MLPaymentGatewayAdapter.class);
 
     public MLPaymentGatewayAdapter(
@@ -30,25 +34,31 @@ public class MLPaymentGatewayAdapter implements PaymentGateway {
         if ("ERRO".equals(payment.getDescription())) {
             return PaymentStatus.REJECTED;
         }
-        return PaymentStatus.ACCEPTED;
+        return random.nextBoolean() ? PaymentStatus.ACCEPTED : PaymentStatus.REJECTED;
     }
 
+    @Async
     @Override
-    public void notifyStatus(WebhookPagamentoRequest request) {
-        executePost(request, request.codigoPagamento());
+    public void notifyStatus(UUID idVeiculo, WebhookPagamentoRequest request) {
+        executePatch(idVeiculo, request);
     }
 
-    public void executePost(WebhookPagamentoRequest payload, String codPayment) {
+    public void executePatch(UUID idVeiculo, WebhookPagamentoRequest payload) {
+        log.info("Enviando payload para veículo: {}", payload);
         try {
-            restClient.post()
-                    .uri("/veiculos/webhook/pagamento")
+            restClient.patch()
+                    .uri("/veiculos/notificar-venda/{idVeiculo}", idVeiculo)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(payload)
                     .retrieve()
                     .toBodilessEntity();
         } catch (RestClientException ex) {
             log.error("Falha ao notificar webhook. Payload: {}", payload, ex);
-            throw new PaymentException("Erro ao notificar webhook do veículo: " + codPayment, ex);
+            throw new PaymentException("Erro ao notificar webhook do veículo: " + idVeiculo, ex);
         }
+    }
+
+    public void setRandom(Random random) {
+        this.random = random;
     }
 }

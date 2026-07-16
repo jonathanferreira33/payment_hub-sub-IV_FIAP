@@ -8,8 +8,12 @@ import com.fiap.payment_hub.application.mappers.PaymentAppMapper;
 import com.fiap.payment_hub.application.ports.input.CreatePaymentUseCase;
 import com.fiap.payment_hub.application.ports.output.PaymentRepository;
 import com.fiap.payment_hub.domain.entities.Payment;
+import com.fiap.payment_hub.domain.enums.PaymentStatus;
 import com.fiap.payment_hub.domain.valueobjects.Card;
 import com.fiap.payment_hub.domain.valueobjects.Pix;
+import com.fiap.payment_hub.infrastructure.adapters.input.dto.request.CardInput;
+import com.fiap.payment_hub.infrastructure.adapters.input.dto.request.PaymentInput;
+import com.fiap.payment_hub.infrastructure.adapters.input.dto.request.PixInput;
 import com.fiap.payment_hub.infrastructure.error.PaymentException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +34,7 @@ public class CreatePaymentService implements CreatePaymentUseCase {
 
     @Override
     @Transactional
-    public PaymentResponse execute(PaymentRequest request) {
+    public PaymentResponse execute(PaymentInput request) {
         Card domainCard = mapToDomainCard(request.card());
         Pix domainPix = mapToDomainPix(request.pix());
 
@@ -50,19 +54,25 @@ public class CreatePaymentService implements CreatePaymentUseCase {
 
         Payment savedPayment = paymentRepository.save(payment);
 
+        PaymentStatus paymentStatus = asyncProcessor
+                .processAsynchronousPayment(payment.getId(), request.vendaId(), request.veiculoId());
 
-        asyncProcessor.processAsynchronousPayment(payment.getId(), request.vendaId());
-
+        if (paymentStatus.equals(PaymentStatus.SUCCESS)) {
+            savedPayment.approve();
+        }
+        if (paymentStatus.equals(PaymentStatus.REJECTED)) {
+            savedPayment.fail();
+        }
 
         return PaymentAppMapper.domainToResponse(savedPayment);
     }
 
-    private Card mapToDomainCard(CardRequest cardReq) {
+    private Card mapToDomainCard(CardInput cardReq) {
         if (cardReq == null) return null;
         return new Card(cardReq.holderName(), cardReq.number(), cardReq.expiration(), cardReq.cvv(), cardReq.type());
     }
 
-    private Pix mapToDomainPix(PixRequest pixReq) {
+    private Pix mapToDomainPix(PixInput pixReq) {
         if (pixReq == null) return null;
         return new Pix(pixReq.key(), pixReq.expiration());
     }

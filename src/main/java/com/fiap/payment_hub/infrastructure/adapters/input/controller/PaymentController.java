@@ -1,6 +1,7 @@
-package com.fiap.payment_hub.infrastructure.adapters.input.web.controller;
+package com.fiap.payment_hub.infrastructure.adapters.input.controller;
 
 import com.fiap.payment_hub.application.dto.request.PaymentRequest;
+import com.fiap.payment_hub.application.mappers.PaymentMapper;
 import com.fiap.payment_hub.application.ports.input.CreatePaymentUseCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,11 +26,10 @@ public class PaymentController {
 
     @PostMapping
     public ResponseEntity<Void> criarPagamento(@RequestBody PaymentRequest request) {
-        log.info("Recebido no Payment Hub: valor = {}", request.amount());
-        useCase.execute(request);
+        log.info("Recebido no Payment Hub: veiculo ID = {}", request.veiculoId());
+        useCase.execute(PaymentMapper.toInput(request));
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
-
 
 }
