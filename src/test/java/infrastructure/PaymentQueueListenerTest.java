@@ -1,0 +1,58 @@
+package infrastructure;
+
+import com.fiap.payment_hub.application.dto.request.PaymentRequest;
+import com.fiap.payment_hub.application.ports.input.CreatePaymentUseCase;
+import com.fiap.payment_hub.domain.enums.PaymentMethod;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import java.math.BigDecimal;
+import java.util.UUID;
+
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
+import static org.mockito.internal.verification.VerificationModeFactory.times;
+
+@ExtendWith(MockitoExtension.class)
+class PaymentQueueListenerTest {
+
+    @Mock
+    private CreatePaymentUseCase createPaymentUseCase;
+
+//    @Test
+//    void deveProcessarRequisicaoComSucessoAoReceberMensagem() {
+//        PaymentRequest requestFake = new PaymentRequest(
+//                BigDecimal.valueOf(100.00),
+//                UUID.randomUUID(),
+//                "Assinatura Premium",
+//                UUID.randomUUID(),
+//                PaymentMethod.PIX,
+//                null,
+//                null,
+//                "AAAA-1234"
+//        );
+//
+//        verify(createPaymentUseCase, times(1)).execute(requestFake);
+//    }
+//
+//    @Test
+//    void deveCapturarETratarExcecaoQuandoOUseCaseFalhar() {
+//        PaymentRequest requestFake = new PaymentRequest(
+//                BigDecimal.valueOf(100.00),
+//                UUID.randomUUID(),
+//                "Assinatura Premium",
+//                UUID.randomUUID(),
+//               null,
+//                null,
+//                null,
+//                "AAAA-1234"
+//        );
+//
+//        doThrow(new IllegalArgumentException("Dados inválidos capturados no validador"))
+//                .when(createPaymentUseCase).execute(requestFake);
+//
+//
+//        verify(createPaymentUseCase, times(1)).execute(requestFake);
+//    }
+}
